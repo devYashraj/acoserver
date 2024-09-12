@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv'
 import cors from 'cors';
 import axios from 'axios';
+import axiosRetry from 'axios-retry';
 
 dotenv.config()
 const app = express();
@@ -21,11 +22,13 @@ const searchUrl = process.env.API_URL_SEARCH;
 const topUrl = process.env.API_URL_TOP;
 const api_key = process.env.API_KEY;
 
+axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
+
 app.post("/api/acoserver/search", async (req, res) => {
     const { query, country, language } = req.body;
     const url = `${searchUrl}?q=${query}&max=${30}&lang=${language}&country=${country}&apikey=${api_key}`;
     try {
-        const response = await axios.get(url);
+        const response = await axios.get(url, { timeout: 10000 });
         res.status(200).json(response.data);
     } catch (error) {
         console.log(error);
@@ -37,7 +40,7 @@ app.post("/api/acoserver/topheadlines", async (req, res) => {
     const { country, language, category } = req.body;
     const url = `${topUrl}?category=${category}&max=${30}&lang=${language}&country=${country}&apikey=${api_key}`;
     try {
-        const response = await axios.get(url);
+        const response = await axios.get(url, { timeout: 10000 });
         res.status(200).json(response.data);
     } catch (error) {
         console.log(error);
