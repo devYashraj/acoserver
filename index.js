@@ -8,7 +8,7 @@ dotenv.config()
 const app = express();
 app.use(express.json());
 
-const globalAgent = new https.Agent({ keepAlive: true, keepAliveMsecs: 15000 });
+const globalAgent = new https.Agent({ keepAlive: true, keepAliveMsecs: 20000 });
 axios.defaults.httpsAgent = globalAgent;
 
 const corsOptions = {
@@ -29,9 +29,7 @@ app.post("/api/acoserver/search", async (req, res) => {
     const url = `${searchUrl}?q=${query}&max=${30}&lang=${language}&country=${country}&apikey=${api_key}`;
     try {
         console.log("Received search request. Fetching news");
-        const response = await axios.get(url, {
-            timeout: 15000
-        });
+        const response = await axios.get(url);
         res.status(200).json(response.data);
     } catch (error) {
         console.log(error);
@@ -44,9 +42,7 @@ app.post("/api/acoserver/topheadlines", async (req, res) => {
     const url = `${topUrl}?category=${category}&max=${30}&lang=${language}&country=${country}&apikey=${api_key}`;
     try {
         console.log("Received top headline request. Fetching news");
-        const response = await axios.get(url, {
-            timeout: 15000
-        });
+        const response = await axios.get(url);
         res.status(200).json(response.data);
     } catch (error) {
         console.log(error);
