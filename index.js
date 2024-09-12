@@ -6,7 +6,15 @@ import axios from 'axios';
 dotenv.config()
 const app = express();
 app.use(express.json());
-app.use(cors());
+
+const corsOptions = {
+    origin: ['http://localhost:5173', 'https://aconews-8ea9b.web.app'],  
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, 
+  };
+  
+
+app.use(cors(corsOptions));
 
 const PORT = process.env.PORT;
 const searchUrl = process.env.API_URL_SEARCH;
@@ -37,6 +45,7 @@ app.post("/api/acoserver/topheadlines", async (req, res) => {
     }
 })
 
+app.options('*', cors(corsOptions));
 
 app.listen(PORT, () => {
     console.log("Listening at port ", PORT);
